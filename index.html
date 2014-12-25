@@ -1,10 +1,7 @@
 <!doctype html>
 <html ng-app="quatroApp">
   <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>-->
-  <script src="node_modules/angular/angular.min.js"></script>
-  <script src="js/quatro.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/controller.js"></script>
+  
   <style>
   .layer {
     padding:15px;
@@ -30,8 +27,18 @@
     <button ng-click="checkWinner()">Check</button>
     <button ng-click="cleanMetadata()">Clean</button>
     <button ng-click="reset()">Reset</button>
+    <button ng-click="addCube()">Gooo</button>
+
+<div id="gl-container"></div>
+
   </div>
 
   
-
+<script src="node_modules/angular/angular.min.js"></script>
+  <script src="js/quatro.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/controller.js"></script>
+  <script src="node_modules/three/three.min.js"></script>
+  <script type="text/javascript" src="js/TrackballControls.js"></script>
+  <script type="text/javascript" src="js/webgl.js"></script>
 </html>

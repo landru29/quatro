@@ -7,7 +7,8 @@
   },
   "description": "Quatro computer game",
   "dependencies": {
-    "angular": "~1.3.5"
+    "angular": "~1.3.5",
+    "three": "~0.69.0"
   },
   "devDependencies": {
     "matchdep": "~0.1.1",
