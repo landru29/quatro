@@ -3,6 +3,10 @@
   <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>-->
   
   <style>
+  .debug {
+    display: none;
+  }
+
   .layer {
     padding:15px;
     display:inline-block;
@@ -15,9 +19,33 @@
   .highlight {
     background-color: green;
   }
+
+  .player {
+    display:inline-block;
+  }
+
+  .winner {
+    display:inline-block;
+    font-size:32px;
+  }
+
+  .Player1 {
+    background-image:url('img/texture1.jpg');
+  }
+
+  .Player2 {
+    background-image:url('img/texture2.jpg');
+  }
+
+  .plate {
+    background-color: #E3F6CE;
+  }
+
   </style>
 
   <div ng-controller="myController">
+
+  <div class="debug">
 
     <div ng-repeat="X in game.getData()" class="layer">
       <div ng-repeat="Y in X" class="line">
@@ -29,7 +57,28 @@
     <button ng-click="reset()">Reset</button>
     <button ng-click="addCube()">Gooo</button>
 
-<div id="gl-container"></div>
+</div>
+
+<div class="header">
+  <div ng-repeat="player in players">
+    {{player.name}} : <input type="text" ng-model="player.caption" />
+  </div>
+  <span class="player {{currentPlayer.name}}" >{{currentPlayer.caption}} is playing </span>
+  <div>
+    <div ng-repeat="y in [0,1,2,3]">
+      <button ng-repeat="x in [0,1,2,3]" ng-click="play(x, y)">x{{x}}-y{{y}}</button>
+    </div>
+  </div>
+
+  <div ng-if="winner">
+    <span class="winner {{currentPlayer.name}}">Winner is {{winner.caption}}</span>
+  </div>
+
+</div>
+
+
+
+<div id="gl-container" class="plate"></div>
 
   </div>
 

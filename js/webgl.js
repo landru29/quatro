@@ -6,31 +6,43 @@ var plateScene = function() {
     var createCube = function(size, texture) {
         var geometry = new THREE.CubeGeometry(size, size, size);
 
-        var material = new THREE.MeshBasicMaterial({
+        var material;
+        if (typeof texture === 'string') {
+            material = new THREE.MeshBasicMaterial({
+                map: THREE.ImageUtils.loadTexture(texture, new THREE.SphericalReflectionMapping()),
+                overdraw: true
+            });
+        } else {
+            material = texture;
+        }
+        return new THREE.Mesh(geometry, material);
+    };
+
+    this.createTexture = function(texture) {
+        return new THREE.MeshBasicMaterial({
             map: THREE.ImageUtils.loadTexture(texture, new THREE.SphericalReflectionMapping()),
             overdraw: true
         });
-
-        return new THREE.Mesh(geometry, material);
     };
 
     var createBase = function(size, texture) {
         var geometry = new THREE.BoxGeometry(size * 4, size / 4, size * 4);
 
-        var material = new THREE.MeshBasicMaterial({
-            map: THREE.ImageUtils.loadTexture(texture, new THREE.SphericalReflectionMapping()),
-            overdraw: true
-        });
+        var material;
+        if (typeof texture === 'string') {
+            material = new THREE.MeshBasicMaterial({
+                map: THREE.ImageUtils.loadTexture(texture, new THREE.SphericalReflectionMapping()),
+                overdraw: true
+            });
+        } else {
+            material = texture;
+        }
 
         return new THREE.Mesh(geometry, material);
     };
 
-    var createCam = function() {
-        // on initialise la camera que l’on place ensuite sur la scène
-        var thisCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-        thisCamera.position.set(0, 0, 1000);
-
-        controls = new THREE.TrackballControls(thisCamera);
+    var addControls = function(thisCamera, domElement) {
+        controls = new THREE.TrackballControls(thisCamera, domElement);
 
         controls.rotateSpeed = 1.0;
         controls.zoomSpeed = 1.2;
@@ -45,6 +57,12 @@ var plateScene = function() {
         controls.keys = [65, 83, 68];
 
         controls.addEventListener('change', render);
+    };
+
+    var createCam = function() {
+        // on initialise la camera que l’on place ensuite sur la scène
+        var thisCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+        thisCamera.position.set(500, 200, 3000);
 
         return thisCamera;
     };
@@ -68,6 +86,8 @@ var plateScene = function() {
 
         // on effectue le rendu de la scène
         renderer.render(scene, camera);
+
+        addControls(camera, document.getElementById('gl-container'));
     };
 
     var animate = function() {

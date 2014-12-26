@@ -3,6 +3,10 @@
 
 var quatroLib = function() {
 
+	var players = {};
+
+	var currentPlayer = 0;
+
 	var init = function() {
 		var result = {};
 		for (var x = 0; x < 4; x++) {
@@ -184,9 +188,44 @@ var quatroLib = function() {
 		return data['x' + x]['y' + y]['z' + z];
 	};
 
+	var getCurrentPlayer = function() {
+		var current = currentPlayer % Object.keys(players).length;
+		var playerName = Object.keys(players)[current];
+		return players[playerName];
+	};
 
-	this.setElement = function(x, y, z, data) {
-		this.game['x' + x]['y' + y]['z' + z] = data;
+	var changePlayer = function() {
+		currentPlayer++;
+	};
+
+	var requestShoot = function(data, x, y) {
+		var vertical = data['x' + x]['y' + y];
+		for (var z = 0; z < 4; z++) {
+			if (!data['x' + x]['y' + y]['z' + z].value) {
+				return {
+					x: x,
+					y: y,
+					z: z
+				};
+			}
+		}
+		return false;
+	};
+
+	var shoot = function(data, x, y, z, playerName) {
+		setElement(data, x, y, z, {
+			value: playerName,
+			highlight: false
+		});
+		return getElement(data, x, y, z);
+	};
+
+	var setElement = function(data, x, y, z, el) {
+		data['x' + x]['y' + y]['z' + z] = el;
+	};
+
+	this.setElement = function(x, y, z, el) {
+		setElement(this.game, x, y, z, el);
 	};
 
 	this.getElement = function(x, y, z) {
@@ -197,7 +236,26 @@ var quatroLib = function() {
 		return this.game;
 	};
 
+	this.play = function(x, y) {
+		var player = getCurrentPlayer();
+		var thisShoot = requestShoot(this.game, x, y);
+		if (thisShoot) {
+			var result = shoot(this.game, thisShoot.x, thisShoot.y, thisShoot.z, player.name);
+			changePlayer();
+			return {
+				x: thisShoot.x,
+				y: thisShoot.y,
+				z: thisShoot.z,
+				cell: result
+			};
+		} else {
+			return false;
+		}
+	};
+
 	this.checkWinner = function() {
+		var name = null;
+
 		var xLines = checkXLines(this.game);
 		var yLines = checkYLines(this.game);
 		var zLines = checkZLines(this.game);
@@ -206,13 +264,17 @@ var quatroLib = function() {
 		var zyLines = checkZYDiag(this.game);
 		var superDiag = checkSuperDiag(this.game);
 
-		if (xLines) return xLines;
-		if (yLines) return yLines;
-		if (zLines) return zLines;
-		if (xzLines) return xzLines;
-		if (xyLines) return xyLines;
-		if (zyLines) return zyLines;
-		if (superDiag) return superDiag;
+		if (xLines) name = xLines;
+		if (yLines) name = yLines;
+		if (zLines) name = zLines;
+		if (xzLines) name = xzLines;
+		if (xyLines) name = xyLines;
+		if (zyLines) name = zyLines;
+		if (superDiag) name = superDiag;
+
+		if (name) {
+			return players[name.value];
+		}
 		return null;
 	};
 
@@ -222,6 +284,23 @@ var quatroLib = function() {
 
 	this.reset = function() {
 		this.game = init();
+	};
+
+	this.addPlayer = function(player) {
+		players[player.name] = player;
+	};
+
+	this.getPlayers = function() {
+		return players;
+	};
+
+	this.getCurrentPlayer = function() {
+		return getCurrentPlayer();
+	};
+
+	this.sortPlayer = function() {
+		var d = new Date();
+		return d.getMilliseconds() % Object.keys(players).length;
 	};
 
 	this.game = init();
