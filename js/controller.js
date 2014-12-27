@@ -49,7 +49,7 @@ angular.module('quatroApp').controller('myController', ['$scope', function($scop
 	$scope.play = function(x, y) {
 		var obj = $scope.game.play(x, y);
 		if (obj) {
-			plate.addCube($scope.cubeSize, $scope.currentPlayer.texture, obj.x, obj.y, obj.z);
+			plate.addCube($scope.cubeSize, obj.player.texture, obj.x, obj.y, obj.z);
 		}
 	};
 

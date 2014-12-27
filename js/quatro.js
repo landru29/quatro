@@ -246,7 +246,8 @@ var quatroLib = function() {
 				x: thisShoot.x,
 				y: thisShoot.y,
 				z: thisShoot.z,
-				cell: result
+				cell: result,
+				player: player
 			};
 		} else {
 			return false;
