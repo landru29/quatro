@@ -1,0 +1,45 @@
+.debug {
+    display: none;
+  }
+
+  .layer {
+    padding:15px;
+    display:inline-block;
+  }
+
+  .cell {
+    width:20px;
+  }
+
+  .highlight {
+    background-color: green;
+  }
+
+  .player {
+    display:inline-block;
+  }
+
+  .winner {
+    display:inline-block;
+    font-size:32px;
+  }
+
+  .Player1 {
+    background-image:url('../img/texture1.jpg');
+  }
+
+  .Player2 {
+    background-image:url('../img/texture2.jpg');
+  }
+
+  .plate {
+    background-color: #E3F6CE;
+  }
+
+  h1.title {
+    display:block;
+    width:100%;
+    text-align:center;
+    font-size: 72px;
+    margin: 0px;
+  }

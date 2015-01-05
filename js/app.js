@@ -1,3 +1,3 @@
 "use strict";
 
-angular.module('quatroApp', []);
+angular.module('quatroApp', ['ui.bootstrap']);

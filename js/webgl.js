@@ -1,7 +1,21 @@
 var plateScene = function() {
     "use strict";
 
-    var renderer, scene, controls, camera;
+    var renderer
+    var scene;
+    var controls;
+    var camera;
+    var dom;
+    var dummies = [];
+    var rotating;
+    var mouseButtonDown;
+    var lastHover = null;
+    var playCallback = function(x, y) {};
+    var endGame = false;
+    var rotationInitialPosition = {
+        x: 0,
+        y: 0
+    };
 
     var createCube = function(size, texture) {
         var geometry = new THREE.CubeGeometry(size, size, size);
@@ -9,7 +23,9 @@ var plateScene = function() {
         var material;
         if (typeof texture === 'string') {
             material = new THREE.MeshBasicMaterial({
-                map: THREE.ImageUtils.loadTexture(texture, new THREE.SphericalReflectionMapping()),
+                map: THREE.ImageUtils.loadTexture(texture, new THREE.SphericalReflectionMapping(), function() {
+                    renderer.render(scene, camera);
+                }),
                 overdraw: true
             });
         } else {
@@ -18,9 +34,29 @@ var plateScene = function() {
         return new THREE.Mesh(geometry, material);
     };
 
+    var createMark = function(texture) {
+        var geometry = new THREE.CubeGeometry(30, 30, 30);
+
+        var material;
+        if (typeof texture === 'string') {
+            material = new THREE.MeshBasicMaterial({
+                map: THREE.ImageUtils.loadTexture(texture, new THREE.SphericalReflectionMapping(), function() {
+                    renderer.render(scene, camera);
+                }),
+                overdraw: true
+            });
+        } else {
+            material = texture;
+        }
+
+        return new THREE.Mesh(geometry, material);
+    };
+
     this.createTexture = function(texture) {
         return new THREE.MeshBasicMaterial({
-            map: THREE.ImageUtils.loadTexture(texture, new THREE.SphericalReflectionMapping()),
+            map: THREE.ImageUtils.loadTexture(texture, new THREE.SphericalReflectionMapping(), function() {
+                renderer.render(scene, camera);
+            }),
             overdraw: true
         });
     };
@@ -31,7 +67,9 @@ var plateScene = function() {
         var material;
         if (typeof texture === 'string') {
             material = new THREE.MeshBasicMaterial({
-                map: THREE.ImageUtils.loadTexture(texture, new THREE.SphericalReflectionMapping()),
+                map: THREE.ImageUtils.loadTexture(texture, new THREE.SphericalReflectionMapping(), function() {
+                    renderer.render(scene, camera);
+                }),
                 overdraw: true
             });
         } else {
@@ -67,7 +105,7 @@ var plateScene = function() {
         return thisCamera;
     };
 
-    var init = function(size) {
+    var init = function(size, dom) {
         camera = createCam();
         // on initialise le moteur de rendu
         renderer = new THREE.WebGLRenderer({
@@ -87,7 +125,7 @@ var plateScene = function() {
         // on effectue le rendu de la scène
         renderer.render(scene, camera);
 
-        addControls(camera, document.getElementById('gl-container'));
+        addControls(camera, dom);
     };
 
     var animate = function() {
@@ -99,9 +137,105 @@ var plateScene = function() {
         renderer.render(scene, camera);
     };
 
+    var checkOver = function(event) {
+        {
+            if (endGame) {
+                return;
+            }
+
+            var mouse = new THREE.Vector2();
+            event.preventDefault();
+
+            if (mouseButtonDown) {
+                var distance = (rotationInitialPosition.x - event.x) * (rotationInitialPosition.x - event.x) + (rotationInitialPosition.y - event.y) * (rotationInitialPosition.y - event.y);
+                if (distance > 10) {
+                    rotating = true;
+                }
+            } else {
+                rotating = false;
+            }
+
+            mouse.x = (event.offsetX / controls.screen.width) * 2 - 1;
+            mouse.y = -(event.offsetY / controls.screen.height) * 2 + 1;
+
+            //var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
+            var vector = new THREE.Vector3(mouse.x, mouse.y, 0.01).unproject(camera);
+            var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+            var intersects = raycaster.intersectObjects(dummies);
+
+            if (intersects.length > 0) {
+                clearDummies();
+                intersects[0].object.material.opacity = 0.6;
+                lastHover = intersects[0].object;
+                renderer.render(scene, camera);
+            } else {
+                lastHover = null;
+                clearDummies();
+                renderer.render(scene, camera);
+            }
+        }
+    };
+
+    var selectItem = function(event) {
+        if (endGame) {
+            return;
+        }
+        if ((lastHover) && (!rotating) && (lastHover.name)) {
+            var matches = lastHover.name.match(/dummy_(\d*)-(\d*)/);
+            playCallback(matches[1], matches[2]);
+        }
+        mouseButtonDown = false;
+    }
+
+    var getDummies = function() {
+        var objects = [];
+        var elements = scene.children;
+        for (var i in elements) {
+            if (elements[i].name.indexOf('dummy_') === 0) {
+                objects.push(elements[i]);
+            }
+        }
+        return objects;
+    }
+
+    var clearDummies = function() {
+        for (var i in dummies) {
+            dummies[i].material.opacity = 0;
+        }
+    }
+
+    this.end = function() {
+        endGame = true;
+    }
+
+    this.setPlayCallback = function(callback) {
+        playCallback = callback;
+    }
+
     this.init = function(size) {
-        init(size);
+        dom = document.getElementById('gl-container');
+        this.dom = dom;
+        init(size, this.dom);
         animate();
+        this.controls = controls;
+        var x = [];
+        for (var i = 0; i < 4; i++) {
+            var y = [];
+            for (var j = 0; j < 4; j++) {
+                this.addDummyCube(size, i, j, 0);
+            }
+            x.push(y);
+        }
+        this.dom.addEventListener('mousemove', checkOver, false);
+        this.dom.addEventListener('mouseup', selectItem, false);
+        this.dom.addEventListener('mousedown', function(event) {
+            mouseButtonDown = true;
+            rotationInitialPosition = {
+                x: event.x,
+                y: event.y
+            }
+        }, false);
     };
 
     this.addCube = function(size, texture, x, y, z) {
@@ -111,10 +245,51 @@ var plateScene = function() {
         cube.position.z = y * size - 3 * size / 2;
         scene.add(cube);
         renderer.render(scene, camera);
+        return cube;
     };
+
+    this.highlightWinner = function(data) {
+        var material;
+        for (var i in data) {
+            if (!data[i].highlight) {
+                data[i].data.mesh.material.opacity = 0.3;
+                data[i].data.mesh.material.transparent = true;
+            }
+        }
+        renderer.render(scene, camera);
+    }
+
+    this.addDummyCube = function(size, x, y, z) {
+        var sphereMaterial = new THREE.MeshLambertMaterial({
+            color: 0xfa8258,
+            transparent: true,
+            opacity: 0
+        });
+        var cube = createCube(size, sphereMaterial);
+        cube.position.x = x * size - 3 * size / 2;
+        cube.position.y = z * size + 5 * size / 8;
+        cube.position.z = y * size - 3 * size / 2;
+        cube.name = 'dummy_' + x + '-' + y;
+        scene.add(cube);
+        renderer.render(scene, camera);
+        dummies = getDummies();
+        return cube;
+    };
+
+    this.removeDummyCube = function(x, y) {
+        var elements = scene.children;
+        for (var i in elements) {
+            if (elements[i].name === 'dummy_' + x + '-' + y) {
+                scene.remove(elements[i]);
+            }
+        }
+        renderer.render(scene, camera);
+        dummies = getDummies();
+    }
 
     this.createBase = function(size, texture) {
         scene.add(createBase(size, texture));
+
         renderer.render(scene, camera);
     };
 };

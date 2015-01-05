@@ -16,7 +16,10 @@ var quatroLib = function() {
 				for (var z = 0; z < 4; z++) {
 					yLine['z' + z] = {
 						value: null,
-						highlight: false
+						highlight: false,
+						setData: function(data) {
+							this.data = data;
+						}
 					};
 				}
 				xLine['y' + y] = (yLine);
@@ -221,7 +224,10 @@ var quatroLib = function() {
 	};
 
 	var setElement = function(data, x, y, z, el) {
-		data['x' + x]['y' + y]['z' + z] = el;
+		for (var field in el) {
+			data['x' + x]['y' + y]['z' + z][field] = el[field];
+		}
+		//data['x' + x]['y' + y]['z' + z] = el;
 	};
 
 	this.setElement = function(x, y, z, el) {
@@ -252,6 +258,20 @@ var quatroLib = function() {
 		} else {
 			return false;
 		}
+	};
+
+	this.getAllData = function() {
+		var data = [];
+		for (var x in this.game) {
+			for (var y in this.game[x]) {
+				for (var z in this.game[x][y]) {
+					if (this.game[x][y][z].value) {
+						data.push(this.game[x][y][z]);
+					}
+				}
+			}
+		}
+		return data;
 	};
 
 	this.checkWinner = function() {

@@ -10,18 +10,23 @@ angular.module('quatroApp').controller('myController', ['$scope', function($scop
 
 	$scope.winner = null;
 
+	$scope.navigation = true;
+
+	//$scope.allData = [];
+
 	plate.init($scope.cubeSize);
 	plate.createBase($scope.cubeSize, 'img/material.jpg');
+
 
 	$scope.game.addPlayer({
 		name: 'Player1',
 		caption: 'player1',
-		texture: plate.createTexture('img/texture1.jpg')
+		textureUrl: 'img/texture1.jpg',
 	});
 	$scope.game.addPlayer({
 		name: 'Player2',
 		caption: 'player2',
-		texture: plate.createTexture('img/texture2.jpg')
+		textureUrl: 'img/texture2.jpg',
 	});
 
 	$scope.players = $scope.game.getPlayers();
@@ -42,27 +47,37 @@ angular.module('quatroApp').controller('myController', ['$scope', function($scop
 		$scope.game.reset();
 	};
 
-	$scope.addCube = function() {
-		plate.addCube($scope.cubeSize, 'img/material.jpg', 0, 0, 0);
-	};
-
-	$scope.play = function(x, y) {
-		var obj = $scope.game.play(x, y);
-		if (obj) {
-			plate.addCube($scope.cubeSize, obj.player.texture, obj.x, obj.y, obj.z);
+	$scope.checkPlayerTexture = function(player) {
+		if (!player.texture) {
+			player.texture = plate.createTexture(player.textureUrl);
 		}
-	};
+	}
 
-	$scope.$watch(function($scope) {
-		return $scope.game.getCurrentPlayer();
-	}, function(newVal) {
-		$scope.currentPlayer = newVal;
+	$scope.$watch('navigation', function(newVal) {
+		plate.controls.enableNavigation(newVal);
 	});
 
-	$scope.$watch(function($scope) {
-		return $scope.game.checkWinner();
-	}, function(newVal) {
-		$scope.winner = newVal;
+	plate.setPlayCallback(function(x, y) {
+		var obj = $scope.game.play(x, y);
+		if (obj) {
+			$scope.checkPlayerTexture(obj.player);
+			plate.removeDummyCube(x, y);
+			obj.cell.setData({
+				mesh: plate.addCube($scope.cubeSize, obj.player.textureUrl, obj.x, obj.y, obj.z),
+				texture: ''
+			});
+			if (obj.z < 4) {
+				plate.addDummyCube($scope.cubeSize, obj.x, obj.y, obj.z + 1);
+			}
+		}
+		$scope.winner = $scope.game.checkWinner();
+		$scope.currentPlayer = $scope.game.getCurrentPlayer();
+		$scope.allData = $scope.game.getAllData();
+		$scope.$apply();
+		if ($scope.winner) {
+			plate.end();
+			plate.highlightWinner($scope.game.getAllData());
+		}
 	});
 
 }]);
