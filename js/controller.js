@@ -5,7 +5,6 @@ angular.module('quatroApp').controller('myController', ['$scope', function($scop
 	$scope.game = new quatroLib;
 	$scope.cubeSize = 200;
 	$scope.winner = null;
-	$scope.navigation = true;
 
 	plate.init($scope.cubeSize);
 	plate.createBase($scope.cubeSize, 'img/material.jpg');
@@ -44,10 +43,6 @@ angular.module('quatroApp').controller('myController', ['$scope', function($scop
 			player.texture = plate.createTexture(player.textureUrl);
 		}
 	}
-
-	$scope.$watch('navigation', function(newVal) {
-		//plate.controls.enableNavigation(newVal);
-	});
 
 	plate.setPlayCallback(function(x, y, me) {
 		var obj = $scope.game.play(x, y);
