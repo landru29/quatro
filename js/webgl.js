@@ -18,6 +18,23 @@ var plateScene = function() {
     };
     var _this = this;
 
+    var getXY = function(event) {
+        if (typeof event.x !== 'undefined') {
+            return {
+                x: event.x,
+                y: event.y,
+                offsetX: event.offsetX,
+                offsetY: event.offsetY
+            }
+        };
+        return {
+            x: event.pageX - event.target.offsetLeft,
+            y: event.pageY - event.target.offsetTop,
+            offsetX: event.pageX,
+            offsetY: event.pageY
+        };
+    }
+
     var createCube = function(size, texture) {
         var geometry = new THREE.CubeGeometry(size, size, size);
 
@@ -101,7 +118,7 @@ var plateScene = function() {
     var createCam = function() {
         // on initialise la camera que l’on place ensuite sur la scène
         var thisCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-        thisCamera.position.set(500, 2000, 1000);
+        thisCamera.position.set(500, 1500, 1000);
 
         return thisCamera;
     };
@@ -148,8 +165,10 @@ var plateScene = function() {
             var mouse = new THREE.Vector2();
             event.preventDefault();
 
+            var coord = getXY(event);
+
             if (mouseButtonDown) {
-                var distance = (rotationInitialPosition.x - event.x) * (rotationInitialPosition.x - event.x) + (rotationInitialPosition.y - event.y) * (rotationInitialPosition.y - event.y);
+                var distance = (rotationInitialPosition.x - coord.x) * (rotationInitialPosition.x - coord.x) + (rotationInitialPosition.y - coord.y) * (rotationInitialPosition.y - coord.y);
                 if (distance > 10) {
                     rotating = true;
                 }
@@ -157,8 +176,8 @@ var plateScene = function() {
                 rotating = false;
             }
 
-            mouse.x = (event.offsetX / controls.screen.width) * 2 - 1;
-            mouse.y = -(event.offsetY / controls.screen.height) * 2 + 1;
+            mouse.x = (coord.offsetX / controls.screen.width) * 2 - 1;
+            mouse.y = -(coord.offsetY / controls.screen.height) * 2 + 1;
 
             //var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
             var vector = new THREE.Vector3(mouse.x, mouse.y, 0.01).unproject(camera);
@@ -233,9 +252,10 @@ var plateScene = function() {
         this.dom.addEventListener('mouseup', selectItem, false);
         this.dom.addEventListener('mousedown', function(event) {
             mouseButtonDown = true;
+            var coord = getXY(event);
             rotationInitialPosition = {
-                x: event.x,
-                y: event.y
+                x: coord.x,
+                y: coord.y
             }
         }, false);
     };
