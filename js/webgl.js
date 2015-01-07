@@ -30,8 +30,8 @@ var plateScene = function() {
         return {
             x: event.pageX - event.target.offsetLeft,
             y: event.pageY - event.target.offsetTop,
-            offsetX: event.pageX,
-            offsetY: event.pageY
+            offsetX: event.pageX - event.target.offsetLeft,
+            offsetY: event.pageY - event.target.offsetTop
         };
     }
 

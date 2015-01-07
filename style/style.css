@@ -1,5 +1,6 @@
 div.application {
   background-color: #aaaaaa;
+  text-align: center;
 }
 
 div.player {
@@ -106,9 +107,9 @@ span.current-player {
   }
 
   .plate {
-    background-color: green
     width:700px;
     height:500px;
+    display:inline-block;
   }
 
   
