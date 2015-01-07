@@ -1,6 +1,83 @@
-.debug {
-    display: none;
-  }
+div.application {
+  background-color: #aaaaaa;
+}
+
+div.player {
+  padding:10px 0 10px 0;
+  display:block;
+}
+
+div.player-group {
+  display: inline-block;
+  width:250px;
+  vertical-align: text-top;
+  padding:10px;
+}
+
+div.control {
+  width:250px;
+  display: inline-block;
+  vertical-align: text-top;
+  padding:10px;
+}
+
+div.header {
+  text-align: center;
+}
+
+h1.title {
+  display:block;
+  width:100%;
+  text-align:center;
+  font-size: 72px;
+  margin: 0px;
+  padding: 30px 0 40px 0;
+  font-weight:bold;
+}
+
+div.current-player {
+  margin: 30px 0 0 0;
+}
+
+.game {
+  display:none;
+}
+
+div.ready {
+  display:block;
+}
+
+div.loaded {
+  display:none;
+}
+
+.loading {
+  height:700px;
+  font-size:20px;
+  text-align: center;
+}
+
+span.current-player {
+  width: 190px;
+  height: 190px;
+
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=83)";
+  filter: alpha(opacity=83);
+  -moz-opacity: 0.83;
+  -khtml-opacity: 0.83;
+  opacity: 0.83;
+  border: 5px #555555 inset;
+
+  padding: 10px;
+
+  -webkit-border-radius: 190px;
+  -moz-border-radius: 190px;
+  border-radius: 190px;
+
+  -moz-box-shadow: -15px 15px 5px 0px #888888;
+  -webkit-box-shadow: -15px 15px 5px 0px #888888;
+  box-shadow: -15px 15px 5px 0px #888888;
+}
 
   .layer {
     padding:15px;
@@ -13,10 +90,6 @@
 
   .highlight {
     background-color: green;
-  }
-
-  .player {
-    display:inline-block;
   }
 
   .winner {
@@ -33,13 +106,9 @@
   }
 
   .plate {
-    background-color: #E3F6CE;
+    background-color: green
+    width:700px;
+    height:500px;
   }
 
-  h1.title {
-    display:block;
-    width:100%;
-    text-align:center;
-    font-size: 72px;
-    margin: 0px;
-  }
+  

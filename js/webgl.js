@@ -10,12 +10,13 @@ var plateScene = function() {
     var rotating;
     var mouseButtonDown;
     var lastHover = null;
-    var playCallback = function(x, y) {};
+    var playCallback = function(x, y, me) {};
     var endGame = false;
     var rotationInitialPosition = {
         x: 0,
         y: 0
     };
+    var _this = this;
 
     var createCube = function(size, texture) {
         var geometry = new THREE.CubeGeometry(size, size, size);
@@ -100,7 +101,7 @@ var plateScene = function() {
     var createCam = function() {
         // on initialise la camera que l’on place ensuite sur la scène
         var thisCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-        thisCamera.position.set(500, 200, 3000);
+        thisCamera.position.set(500, 2000, 1000);
 
         return thisCamera;
     };
@@ -114,7 +115,8 @@ var plateScene = function() {
 
         // si WebGL ne fonctionne pas sur votre navigateur vous pouvez utiliser le moteur de rendu Canvas à la place
         // renderer = new THREE.CanvasRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        //renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(dom.clientWidth, dom.clientHeight);
         document.getElementById('gl-container').appendChild(renderer.domElement);
 
         // on initialise la scène
@@ -155,6 +157,7 @@ var plateScene = function() {
                 rotating = false;
             }
 
+            console.log(event.offsetX);
             mouse.x = (event.offsetX / controls.screen.width) * 2 - 1;
             mouse.y = -(event.offsetY / controls.screen.height) * 2 + 1;
 
@@ -183,7 +186,7 @@ var plateScene = function() {
         }
         if ((lastHover) && (!rotating) && (lastHover.name)) {
             var matches = lastHover.name.match(/dummy_(\d*)-(\d*)/);
-            playCallback(matches[1], matches[2]);
+            playCallback(matches[1], matches[2], _this);
         }
         mouseButtonDown = false;
     }

@@ -3,20 +3,12 @@
 angular.module('quatroApp').controller('myController', ['$scope', function($scope) {
 
 	$scope.game = new quatroLib;
-
 	$scope.cubeSize = 200;
-
-	$scope.currentPlayer = {};
-
 	$scope.winner = null;
-
 	$scope.navigation = true;
-
-	//$scope.allData = [];
 
 	plate.init($scope.cubeSize);
 	plate.createBase($scope.cubeSize, 'img/material.jpg');
-
 
 	$scope.game.addPlayer({
 		name: 'Player1',
@@ -29,11 +21,11 @@ angular.module('quatroApp').controller('myController', ['$scope', function($scop
 		textureUrl: 'img/texture2.jpg',
 	});
 
+	$scope.currentPlayer = $scope.game.getCurrentPlayer();
 	$scope.players = $scope.game.getPlayers();
 
 	$scope.checkWinner = function() {
 		var winner = $scope.game.checkWinner();
-		console.log(winner);
 		if (winner) {
 			alert('Winner is ' + winner);
 		}
@@ -57,17 +49,16 @@ angular.module('quatroApp').controller('myController', ['$scope', function($scop
 		plate.controls.enableNavigation(newVal);
 	});
 
-	plate.setPlayCallback(function(x, y) {
+	plate.setPlayCallback(function(x, y, me) {
 		var obj = $scope.game.play(x, y);
 		if (obj) {
 			$scope.checkPlayerTexture(obj.player);
-			plate.removeDummyCube(x, y);
+			me.removeDummyCube(x, y);
 			obj.cell.setData({
-				mesh: plate.addCube($scope.cubeSize, obj.player.textureUrl, obj.x, obj.y, obj.z),
-				texture: ''
+				mesh: me.addCube($scope.cubeSize, obj.player.textureUrl, obj.x, obj.y, obj.z)
 			});
 			if (obj.z < 4) {
-				plate.addDummyCube($scope.cubeSize, obj.x, obj.y, obj.z + 1);
+				me.addDummyCube($scope.cubeSize, obj.x, obj.y, obj.z + 1);
 			}
 		}
 		$scope.winner = $scope.game.checkWinner();
@@ -75,8 +66,8 @@ angular.module('quatroApp').controller('myController', ['$scope', function($scop
 		$scope.allData = $scope.game.getAllData();
 		$scope.$apply();
 		if ($scope.winner) {
-			plate.end();
-			plate.highlightWinner($scope.game.getAllData());
+			me.end();
+			me.highlightWinner($scope.game.getAllData());
 		}
 	});
 

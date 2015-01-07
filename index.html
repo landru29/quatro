@@ -2,46 +2,53 @@
 <html ng-app="quatroApp">
   <head>
     <link href="style/style.css" rel="stylesheet" type="text/css" />
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <title>Quatro Computer</title>
   </head>
   <body>
-    <h1 class="title">Quatro Computer</h1>
+    <div class="application">
+      <h1 class="title">Quatro Computer</h1>
 
-    <div ng-controller="myController">
+      <div ng-controller="myController">
 
-      <div class="debug">
+        <div class="game" ng-class="{ready:true}">
+          <div class="header">
 
-        <div ng-repeat="X in game.getData()" class="layer">
-          <div ng-repeat="Y in X" class="line">
-            <input ng-repeat="Z in Y" ng-model="Z.value" class="cell" ng-class="{highlight:Z.highlight}">
+            <div class="player-group">
+              <div ng-repeat="player in players" class="player">
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">{{player.name}}</span>
+                  <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1" ng-model="player.caption" />
+                </div>
+              </div>
+            </div>
+
+            <div class="control">
+              <div class="input-group">
+                <span class="input-group-addon">
+                  <input type="checkbox" aria-label="..." ng-model="navigation">
+                </span>
+                <input type="text" class="form-control" aria-label="..." value="Navigation" readonly>
+              </div>
+              <div class="current-player">
+                <span class="current-player {{currentPlayer.name}}" >{{currentPlayer.caption}} is playing </span>
+              </div>
+            </div>
+
+            <div ng-if="winner">
+              <span class="winner {{winner.name}}">Winner is {{winner.caption}}</span>
+            </div>
+
           </div>
+          <div id="gl-container" class="plate"></div>
         </div>
-        <button ng-click="checkWinner()">Check</button>
-        <button ng-click="cleanMetadata()">Clean</button>
-        <button ng-click="reset()">Reset</button>
-        <button ng-click="addCube()">Gooo</button>
+
+        <div class="loading" ng-class="{loaded:true}">
+          Loading ...
+        </div>
 
       </div>
-
-      <div class="header">
-        <div ng-repeat="player in players">
-          {{player.name}} : <input type="text" ng-model="player.caption" />
-        </div>
-        <span class="player {{currentPlayer.name}}" >{{currentPlayer.caption}} is playing </span>
-
-        <div ng-if="winner">
-          <span class="winner {{winner.name}}">Winner is {{winner.caption}}</span>
-        </div>
-
-        <INPUT type="checkbox" ng-model="navigation"> Navigate
-      </div>
-
-
-
-      <div id="gl-container" class="plate"></div>
-
     </div>
-
   
     <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
     <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
