@@ -46,7 +46,7 @@ angular.module('quatroApp').controller('myController', ['$scope', function($scop
 	}
 
 	$scope.$watch('navigation', function(newVal) {
-		plate.controls.enableNavigation(newVal);
+		//plate.controls.enableNavigation(newVal);
 	});
 
 	plate.setPlayCallback(function(x, y, me) {

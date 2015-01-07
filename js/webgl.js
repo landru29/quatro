@@ -158,6 +158,7 @@ var plateScene = function() {
 
     var checkOver = function(event) {
         {
+
             if (endGame) {
                 return;
             }
@@ -176,10 +177,9 @@ var plateScene = function() {
                 rotating = false;
             }
 
-            mouse.x = (coord.offsetX / controls.screen.width) * 2 - 1;
-            mouse.y = -(coord.offsetY / controls.screen.height) * 2 + 1;
+            mouse.x = (coord.offsetX / event.target.clientWidth) * 2 - 1;
+            mouse.y = -(coord.offsetY / event.target.clientHeight) * 2 + 1;
 
-            //var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
             var vector = new THREE.Vector3(mouse.x, mouse.y, 0.01).unproject(camera);
             var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
 

@@ -110,6 +110,11 @@ THREE.TrackballControls = function(object, domElement) {
 	// methods
 	/*********************************************************/
 	this.handleResize = function() {
+		this.screen.left = 0;
+		this.screen.top = 0;
+		this.screen.width = window.innerWidth;
+		this.screen.height = window.innerHeight;
+		/*return;
 		if (this.domElement === document) {
 			this.screen.left = 0;
 			this.screen.top = 0;
@@ -123,7 +128,7 @@ THREE.TrackballControls = function(object, domElement) {
 			this.screen.top = box.top + window.pageYOffset - d.clientTop;
 			this.screen.width = box.width;
 			this.screen.height = box.height;
-		}
+		}*/
 	};
 	/*********************************************************/
 
@@ -373,8 +378,8 @@ THREE.TrackballControls = function(object, domElement) {
 
 			if (_state === STATE.ROTATE && !_this.noRotate) {
 				var coord = getXY(event);
-				_rotateStart.copy(getMouseProjectionOnBall(coord.x, coord.y * 3));
-				//_rotateStart.copy(getMouseProjectionOnBall(event.pageX, event.pageY));
+				//_rotateStart.copy(getMouseProjectionOnBall(coord.x, coord.y * 3));
+				_rotateStart.copy(getMouseProjectionOnBall(event.pageX, event.pageY));
 				_rotateEnd.copy(_rotateStart);
 			} else if (_state === STATE.ZOOM && !_this.noZoom) {
 				_zoomStart.copy(getMouseOnScreen(event.pageX, event.pageY));
@@ -403,8 +408,8 @@ THREE.TrackballControls = function(object, domElement) {
 
 			if (_state === STATE.ROTATE && !_this.noRotate) {
 				var coord = getXY(event);
-				_rotateEnd.copy(getMouseProjectionOnBall(coord.x, coord.y * 3));
-				//_rotateEnd.copy(getMouseProjectionOnBall(event.pageX, event.pageY));
+				//_rotateEnd.copy(getMouseProjectionOnBall(coord.x, coord.y * 3));
+				_rotateEnd.copy(getMouseProjectionOnBall(event.pageX, event.pageY));
 			} else if (_state === STATE.ZOOM && !_this.noZoom) {
 				_zoomEnd.copy(getMouseOnScreen(event.pageX, event.pageY));
 			} else if (_state === STATE.PAN && !_this.noPan) {
