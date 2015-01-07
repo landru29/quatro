@@ -157,7 +157,6 @@ var plateScene = function() {
                 rotating = false;
             }
 
-            console.log(event.offsetX);
             mouse.x = (event.offsetX / controls.screen.width) * 2 - 1;
             mouse.y = -(event.offsetY / controls.screen.height) * 2 + 1;
 
