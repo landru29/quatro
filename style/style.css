@@ -16,7 +16,7 @@ div.player-group {
 }
 
 div.control {
-  width:250px;
+  width:270px;
   display: inline-block;
   vertical-align: text-top;
   padding:10px;
@@ -58,6 +58,23 @@ div.loaded {
   text-align: center;
 }
 
+span.undo {
+  cursor:pointer;
+  margin-left: 20px;
+  border: 5px #555555 inset;
+  background-color: #01DF01;
+
+  padding: 10px;
+
+  -webkit-border-radius: 190px;
+  -moz-border-radius: 190px;
+  border-radius: 190px;
+}
+
+span.undo:hover {
+  background-color: #81F781;
+}
+
 span.current-player {
   width: 190px;
   height: 190px;
@@ -96,6 +113,11 @@ span.current-player {
   .winner {
     display:inline-block;
     font-size:32px;
+    padding:10px;
+
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
   }
 
   .Player1 {
@@ -110,6 +132,45 @@ span.current-player {
     width:700px;
     height:500px;
     display:inline-block;
+  }
+
+  span.my-button {
+    cursor:pointer;
+    display: inline-block;
+    padding:5px;
+
+    background-color: #dddddd;
+
+    height:34px;
+
+    border: 2px #555555;
+
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+
+    margin:0px 20px 0px 20px;
+  }
+
+  span.my-button:hover {
+    background-color: #81F781;
+    border: 2px #aaaaaa inset;
+  }
+
+  span.turn-left {
+    width:34px;
+    
+    background: #dddddd url('../img/turn-left.png') no-repeat 5px 5px;
+  }
+
+  span.turn-right {
+    width:34px;
+    background: #dddddd url('../img/turn-right.png') no-repeat 5px 5px;
+  }
+
+  span.center {
+    width:34px;
+    background: #dddddd url('../img/center.png') no-repeat 5px 5px;
   }
 
   

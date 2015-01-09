@@ -5,6 +5,8 @@ var plateScene = function() {
     var scene;
     var controls;
     var camera;
+    var camCoord;
+    var camAngle = 0;
     var dom;
     var dummies = [];
     var rotating;
@@ -33,7 +35,7 @@ var plateScene = function() {
             offsetX: event.pageX - event.target.offsetLeft,
             offsetY: event.pageY - event.target.offsetTop
         };
-    }
+    };
 
     var createCube = function(size, texture) {
         var geometry = new THREE.CubeGeometry(size, size, size);
@@ -119,6 +121,7 @@ var plateScene = function() {
         // on initialise la camera que l’on place ensuite sur la scène
         var thisCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
         thisCamera.position.set(500, 1500, 1000);
+        camCoord = JSON.parse(JSON.stringify(thisCamera.position));
 
         return thisCamera;
     };
@@ -207,7 +210,7 @@ var plateScene = function() {
             playCallback(matches[1], matches[2], _this);
         }
         mouseButtonDown = false;
-    }
+    };
 
     var getDummies = function() {
         var objects = [];
@@ -218,21 +221,21 @@ var plateScene = function() {
             }
         }
         return objects;
-    }
+    };
 
     var clearDummies = function() {
         for (var i in dummies) {
             dummies[i].material.opacity = 0;
         }
-    }
+    };
 
     this.end = function() {
         endGame = true;
-    }
+    };
 
     this.setPlayCallback = function(callback) {
         playCallback = callback;
-    }
+    };
 
     this.init = function(size) {
         dom = document.getElementById('gl-container');
@@ -265,6 +268,7 @@ var plateScene = function() {
         cube.position.x = x * size - 3 * size / 2;
         cube.position.y = z * size + 5 * size / 8;
         cube.position.z = y * size - 3 * size / 2;
+        cube.name = 'trick_' + x + '-' + y + '-' + z;
         scene.add(cube);
         renderer.render(scene, camera);
         return cube;
@@ -279,7 +283,7 @@ var plateScene = function() {
             }
         }
         renderer.render(scene, camera);
-    }
+    };
 
     this.addDummyCube = function(size, x, y, z) {
         var sphereMaterial = new THREE.MeshLambertMaterial({
@@ -307,7 +311,31 @@ var plateScene = function() {
         }
         renderer.render(scene, camera);
         dummies = getDummies();
-    }
+    };
+
+    this.removeCube = function(size, x, y, z) {
+        var elements = scene.children;
+        for (var i in elements) {
+            if (elements[i].name === 'trick_' + x + '-' + y + '-' + z) {
+                scene.remove(elements[i]);
+            }
+        }
+        this.removeDummyCube(x, y);
+        this.addDummyCube(size, x, y, z);
+        renderer.render(scene, camera);
+        dummies = getDummies();
+    };
+
+    this.rotateCam = function(degree) {
+        if ('undefined' == typeof degree) {
+            camAngle = 0;
+        } else {
+            camAngle += ((360 + degree) % 360) * Math.PI / 180;
+        }
+        camera.position.x = camCoord.x * Math.cos(camAngle) + camCoord.z * Math.sin(camAngle);
+        camera.position.z = camCoord.z * Math.cos(camAngle) - camCoord.x * Math.sin(camAngle);
+        renderer.render(scene, camera);
+    };
 
     this.createBase = function(size, texture) {
         scene.add(createBase(size, texture));

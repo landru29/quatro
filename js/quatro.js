@@ -1,26 +1,33 @@
 "use strict";
 
 
-var quatroLib = function() {
+var quatroLib = function(initData) {
 
 	var players = {};
 
 	var currentPlayer = 0;
 
+	var tricks = [];
+
+	var generateCell = function() {
+		return {
+			value: null,
+			highlight: false,
+			setData: function(data) {
+				this.data = data;
+			}
+		};
+	};
+
 	var init = function() {
+		tricks = [];
 		var result = {};
 		for (var x = 0; x < 4; x++) {
 			var xLine = {};
 			for (var y = 0; y < 4; y++) {
 				var yLine = {};
 				for (var z = 0; z < 4; z++) {
-					yLine['z' + z] = {
-						value: null,
-						highlight: false,
-						setData: function(data) {
-							this.data = data;
-						}
-					};
+					yLine['z' + z] = generateCell();
 				}
 				xLine['y' + y] = (yLine);
 			}
@@ -220,7 +227,26 @@ var quatroLib = function() {
 			value: playerName,
 			highlight: false
 		});
+		tricks.push({
+			data: data,
+			x: x,
+			y: y,
+			z: z,
+			value: playerName,
+			highlight: false
+		});
 		return getElement(data, x, y, z);
+	};
+
+	var undo = function(data) {
+		if (tricks.length) {
+			var lastElement = tricks.slice(-1)[0];
+			tricks = tricks.slice(1);
+			currentPlayer++;
+			data['x' + lastElement.x]['y' + lastElement.y]['z' + lastElement.z] = generateCell();
+			return lastElement;
+		}
+		return false;
 	};
 
 	var setElement = function(data, x, y, z, el) {
@@ -229,6 +255,10 @@ var quatroLib = function() {
 		}
 		//data['x' + x]['y' + y]['z' + z] = el;
 	};
+
+	this.undo = function() {
+		return undo(this.game);
+	}
 
 	this.setElement = function(x, y, z, el) {
 		setElement(this.game, x, y, z, el);
@@ -325,4 +355,10 @@ var quatroLib = function() {
 	};
 
 	this.game = init();
+	if (initData.players) {
+		for (var i in initData.players) {
+			players[initData.players[i].name] = initData.players[i];
+		}
+		currentPlayer = this.sortPlayer();
+	}
 };

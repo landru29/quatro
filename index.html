@@ -26,15 +26,20 @@
 
             <div class="control">
             <button type="button" class="btn btn-default" onclick="window.location.reload()">New game</button>
-              <div class="current-player">
+              <div class="current-player" ng-hide="winner">
                 <span class="current-player {{currentPlayer.name}}" >{{currentPlayer.caption}} is playing </span>
-              </div>
+                <span ng-show="canUndo" ng-click="undoLastTrick()" class="my-button">undo</span>
+              </div> 
             </div>
 
             <div ng-if="winner">
               <span class="winner {{winner.name}}">Winner is {{winner.caption}}</span>
             </div>
-
+            <div>
+              <span class="turn-left my-button" ng-click="rotateCam(45)"></span>
+              <span class="center my-button" ng-click="rotateCam()"></span>
+              <span class="turn-right my-button" ng-click="rotateCam(-45)"></span>
+            </div>
           </div>
 
         </div>
@@ -50,6 +55,7 @@
     <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
     <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script type="text/javascript" src="bower_components/threejs/build/three.min.js"></script>
+    <script type="text/javascript" src="bower_components/ngstorage/ngStorage.min.js"></script>
     <script type="text/javascript" src="js/quatro.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/controller.js"></script>
